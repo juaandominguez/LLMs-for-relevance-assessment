@@ -4,7 +4,7 @@ import json
 
 QREL_PATH = 'data/processed/stratified_sampling_pairs.txt'
 TOPICS_PATH = 'data/raw/robust04/topics.301-450.601-700.trec.txt'
-DOCS_PATH = 'data/processed/docs_path.csv'
+DOCS_PATH = 'data/processed/doc_paths.csv'
 PROMPT_OUTPUT_PATH = 'data/processed/prompts.jsonl'
 
 parsed_topics = {}
