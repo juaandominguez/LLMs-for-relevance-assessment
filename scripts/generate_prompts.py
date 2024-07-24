@@ -36,7 +36,9 @@ with open(PROMPT_OUTPUT_PATH, 'w') as file:
         file.write(
             json.dumps({
                 'prompt': process_prompt(query, description, narrative, document_text),
-                'relevance': relevance
+                'relevance': relevance,
+                'query_id': query_id,
+                'doc_id': doc_id
             }) + '\n'
         )
 
