@@ -46,6 +46,9 @@ def process_prompt(query, description, narrative, document_text):
 def extract_document_text(doc_path, doc_id):
     with open(doc_path, 'r', encoding='latin') as file:
         data = file.read()
-        doc_text_matches = re.search(r'<DOC>\s*<DOCNO>\s*{}\s*</DOCNO>\s*(.*?)\s*</DOC>'.format(doc_id), data, re.DOTALL)
-        doc_text = doc_text_matches.group(1).strip() if doc_text_matches else None
-        return doc_text
+        full_doc_matches = re.search(r'<DOC>\s*<DOCNO>\s*{}\s*</DOCNO>\s*(.*?)\s*</DOC>'.format(doc_id), data, re.DOTALL)
+        full_doc = full_doc_matches.group(1).strip() if full_doc_matches else None
+        if full_doc:
+            doc_text = re.findall(r'<TEXT>\s*(.*?)\s*</TEXT>',full_doc, re.DOTALL)
+            return ' '.join(doc_text)
+        return None
