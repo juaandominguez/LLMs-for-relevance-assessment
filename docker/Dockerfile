@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY ./requirements.txt ./
 
-RUN apt-get update && apt-get install git -y && apt-get install curl -y && apt-get install netcat -y
+RUN apt-get update && apt-get install git -y && apt-get install curl -y
 
 RUN curl -sLo /tmp/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
     && /bin/bash /tmp/miniconda.sh -b -p /opt/conda \

@@ -2,7 +2,7 @@
 
 ollama start &
 
-while ! nc -z localhost 11434; do
+while ! curl -s http://localhost:11434 >/dev/null; do
   echo "Waiting for ollama service to start..."
   sleep 1
 done
