@@ -9,7 +9,7 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...
-      - docker build -t "$DOCKER_REGISTRY"/irlab/slurm_images:trec-llm .
+      - docker build -t "$DOCKER_REGISTRY"/irlab/slurm_images:trec-llm docker -f docker/Dockerfile
   post_build:
     commands:
       - echo Build completed on `date`
