@@ -1,0 +1,21 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Docker Hub...
+      - echo "$DOCKER_TOKEN" | docker login "$DOCKER_REGISTRY" -u "$DOCKER_USERNAME" --password-stdin
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image...
+      - docker build -t "$DOCKER_REGISTRY"/irlab/slurm_images:trec-llm .
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker image...
+      - docker push "$DOCKER_REGISTRY"/irlab/slurm_images:trec-llm
+
+artifacts:
+  files:
+    - "**/*"
