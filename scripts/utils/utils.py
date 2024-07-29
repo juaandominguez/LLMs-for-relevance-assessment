@@ -11,8 +11,8 @@ def extract_topic_info(topic_text):
 
     num = num_match.group(1).strip() if num_match else None
     title = title_match.group(1).strip() if title_match else None
-    desc = desc_match.group(2).strip() if desc_match else None
-    narr = narr_match.group(2).strip() if narr_match else None
+    desc = desc_match.group(2).strip().replace('\n', ' ') if desc_match else None
+    narr = narr_match.group(2).strip().replace('\n', ' ') if narr_match else None
 
     return num, title, desc, narr
 
