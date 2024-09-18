@@ -2,7 +2,7 @@ from utils.utils import process_prompt, parse_topics, extract_document_text
 import pandas as pd
 import json
 
-QREL_PATH = 'data/processed/stratified_sampling_pairs.txt'
+QREL_PATH = 'data/processed/stratified_sampling_pairs.csv'
 TOPICS_PATH = 'data/raw/robust04/topics.301-450.601-700.trec.txt'
 DOCS_PATH = 'data/processed/doc_paths.csv'
 PROMPT_OUTPUT_PATH = 'data/processed/prompts.jsonl'
