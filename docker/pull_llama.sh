@@ -7,4 +7,4 @@ while ! curl -s http://localhost:11434 >/dev/null; do
   sleep 1
 done
 
-ollama pull llama3.1:70b
+ollama pull llama3.1

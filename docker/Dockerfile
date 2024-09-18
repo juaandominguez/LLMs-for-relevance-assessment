@@ -2,6 +2,8 @@ FROM debian:12.6-slim
 
 WORKDIR /app
 
+ENV OLLAMA_MODELS="/mnt/runs/students/juan.dominguezr/singularity2/ollama"
+
 COPY ./requirements.txt ./
 
 RUN apt-get update && apt-get install git -y && apt-get install curl -y

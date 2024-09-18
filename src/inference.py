@@ -4,8 +4,10 @@ import re
 from sklearn.metrics import mean_absolute_error, cohen_kappa_score
 from itertools import combinations
 
-PROMPTS_PATH = 'PATH'
-QREL_PATH = 'PATH'
+print("Starting Inference...", flush=True)
+
+PROMPTS_PATH = '/mnt/runs/students/juan.dominguezr/TFG/data/processed/prompts.jsonl'
+QREL_PATH = '/mnt/runs/students/juan.dominguezr/TFG/data/processed/stratified_sampling_pairs.txt'
 
 client = Client(host='http://localhost:11434')
 
@@ -44,27 +46,24 @@ def calculate_auc(assesments):
 
     auc_df = pd.DataFrame(all_pairs, columns=['query', 'doc1', 'doc2', 'relevance', 'response'])
     auc_df['coincide'] = auc_df['relevance'] == auc_df['response']
+    print(auc_df.head(20))
     return auc_df['coincide'].mean()
 
 cnt = 0
-with open('file.txt', 'w') as f:
+with open('/mnt/runs/students/juan.dominguezr/TFG/data/processed/results-with-prompts-8b.txt', 'w') as f:
     try:
         assesments = {}
         for line in prompt_df.to_numpy():
+            print(f"Line {cnt}", flush=True)
             prompt, relevance, query_id, doc_id = line
-            response = client.generate(model='llama3.1', messages=[
-                {
-                    'role': 'system',
-                    'content': prompt,
-                },
-            ], options={
+            response = client.generate(model='llama3.1', prompt=prompt, options={
                 'temperature': 0.0,
                 'top_p': 1.0,
-                'num_predict': 100,
-            })
+                'num_predict': 50,
+            }, format='json')['response']
             cnt += 1
-            f.write(f'Prompt {cnt}: {response["message"]["content"]}\n\n')
-            response = parse_response(response['message']['content'])
+            f.write(f'Prompt {cnt}: {response}\n\n')
+            response = parse_response(response)
 
             if response is not None:
                 if query_id not in assesments:
@@ -74,13 +73,17 @@ with open('file.txt', 'w') as f:
                     'response': int(response > 0),
                     'relevance': int(relevance > 0)
                 }
-    except:
-        print("Error in response generation for prompt {cnt}")
+    except Exception as e:
+        print(f"Error in response generation for prompt {cnt}, {e}")
 
     responses = [assesments[query_id][doc_id]['response'] for query_id in assesments for doc_id in assesments[query_id]]
 
     relevances = [assesments[query_id][doc_id]['relevance'] for query_id in assesments for doc_id in assesments[query_id]]
 
+    if len(responses) == 0:
+        print("No responses obtained")
+        exit(1)
+
     f.write(f'\n\n\nMAE: {mean_absolute_error(relevances, responses)}\n')
-    f.write(f'Kappa Coefficient: {cohen_kappa_score(relevances, responses)}\n')
+    f.write(f'Kappah Coeficcient: {cohen_kappa_score(relevances, responses)}\n')
     f.write(f'AUC: {calculate_auc(assesments)}\n')
