@@ -7,7 +7,7 @@ from itertools import combinations
 print("Starting Inference...", flush=True)
 
 PROMPTS_PATH = '/mnt/runs/students/juan.dominguezr/TFG/data/processed/prompts.jsonl'
-QREL_PATH = '/mnt/runs/students/juan.dominguezr/TFG/data/processed/stratified_sampling_pairs.txt'
+QREL_PATH = '/mnt/runs/students/juan.dominguezr/TFG/data/processed/stratified_sampling_pairs.csv'
 
 client = Client(host='http://localhost:11434')
 
