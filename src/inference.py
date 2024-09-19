@@ -85,5 +85,5 @@ with open('/mnt/runs/students/juan.dominguezr/TFG/data/processed/results-with-pr
         exit(1)
 
     f.write(f'\n\n\nMAE: {mean_absolute_error(relevances, responses)}\n')
-    f.write(f'Kappah Coeficcient: {cohen_kappa_score(relevances, responses)}\n')
+    f.write(f'Kappa Coefficient: {cohen_kappa_score(relevances, responses)}\n')
     f.write(f'AUC: {calculate_auc(assesments)}\n')
