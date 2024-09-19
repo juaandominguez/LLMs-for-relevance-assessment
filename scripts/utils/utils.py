@@ -1,7 +1,7 @@
 import re
 import pandas as pd
 
-PROMPT_TEMPLATE_PATH = 'data/raw/prompt_template.txt'
+PROMPT_TEMPLATE_PATH = '/mnt/runs/students/juan.dominguezr/TFG/data/raw/prompt_template.txt'
 
 def extract_topic_info(topic_text):
     num_match = re.search(r'<num>\s*Number:\s*(\d+)', topic_text)

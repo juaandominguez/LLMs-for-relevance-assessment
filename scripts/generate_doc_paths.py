@@ -2,8 +2,8 @@ import os
 import re
 import pandas as pd
 
-TREC_DOCS_PATH = 'data/raw/robust04/disks'
-OUTPUT_PATH = 'data/processed/doc_paths.csv'
+TREC_DOCS_PATH = '/mnt/runs/students/juan.dominguezr/TFG/data/raw/robust04/disks'
+OUTPUT_PATH = '/mnt/runs/students/juan.dominguezr/TFG/data/processed/doc_paths.csv'
 
 dict_df = {}
 
