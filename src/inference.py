@@ -8,6 +8,7 @@ print("Starting Inference...", flush=True)
 
 PROMPTS_PATH = '/mnt/runs/students/juan.dominguezr/TFG/data/processed/prompts.jsonl'
 QREL_PATH = '/mnt/runs/students/juan.dominguezr/TFG/data/processed/stratified_sampling_pairs.csv'
+OUTPUT_FILE = '/mnt/runs/students/juan.dominguezr/TFG/data/processed/results-with-prompts-8b.txt'
 
 client = Client(host='http://localhost:11434')
 
@@ -50,7 +51,7 @@ def calculate_auc(assesments):
     return auc_df['coincide'].mean()
 
 cnt = 0
-with open('/mnt/runs/students/juan.dominguezr/TFG/data/processed/results-with-prompts-8b.txt', 'w') as f:
+with open(OUTPUT_FILE, 'w') as f:
     try:
         assesments = {}
         for line in prompt_df.to_numpy():
