@@ -1,70 +1,41 @@
-from ollama import Client
 import pandas as pd
-import re
 from sklearn.metrics import mean_absolute_error, cohen_kappa_score
-from itertools import combinations
+from utils.functions import parse_response, calculate_auc
+from utils.assesor import Assesor, AssesorType
+
+PROMPTS_PATH = 'data/processed/pooling_prompts.jsonl'
+QREL_PATH = 'data/processed/pooling_pairs.csv'
+OUTPUT_FILE = 'data/processed/results-with-prompts-pooling-8b.txt'
+ASSESSOR_TYPE = AssesorType.POSITIVE_ORACLE
+assesor = Assesor()
 
 print("Starting Inference...", flush=True)
 
-PROMPTS_PATH = '/mnt/runs/students/juan.dominguezr/TFG/data/processed/prompts.jsonl'
-QREL_PATH = '/mnt/runs/students/juan.dominguezr/TFG/data/processed/stratified_sampling_pairs.csv'
-OUTPUT_FILE = '/mnt/runs/students/juan.dominguezr/TFG/data/processed/results-with-prompts-8b.txt'
-
-client = Client(host='http://localhost:11434')
-
 prompt_df = pd.read_json(PROMPTS_PATH, lines=True)
 
-def parse_response(response):
-    try:
-        match = re.findall(r'\{[^{}]*"O":\s*(\d+)[^{}]*\}', response)
-        if match:
-            return int(match[-1])
-    except:
-        print("Error parsing response")
-        return None
-
-def calculate_auc(assesments):
-    df = pd.read_csv(QREL_PATH, sep=' ', header=None, names=['query_id', 'doc_id', 'relevance'])
-
-    grouped = df.groupby('query_id').agg(list)
-
-    all_pairs = []
-
-    for query_id, row in grouped.iterrows():
-        doc_id_list = row['doc_id']
-        relevance_list = row['relevance']
-        try:
-            if len(doc_id_list) == 1:
-                all_pairs.append((query_id, doc_id_list[0], None, assesments[query_id][doc_id_list[0]]['relevance'], assesments[query_id][doc_id_list[0]]['response']))
-            else:
-                pairs = list(combinations(range(len(doc_id_list)), 2))
-                for i, j in pairs:
-                    equal_response = 1 if assesments[query_id][doc_id_list[i]]['response'] == assesments[query_id][doc_id_list[j]]['response'] else 0
-                    equal_relevance = 1 if assesments[query_id][doc_id_list[i]]['relevance'] == assesments[query_id][doc_id_list[j]]['relevance'] else 0
-                    all_pairs.append((query_id, doc_id_list[i], doc_id_list[j], equal_relevance, equal_response))
-        except KeyError as e:
-            pass
-
-    auc_df = pd.DataFrame(all_pairs, columns=['query', 'doc1', 'doc2', 'relevance', 'response'])
-    auc_df['coincide'] = auc_df['relevance'] == auc_df['response']
-    print(auc_df.head(20))
-    return auc_df['coincide'].mean()
+def get_response(prompt, relevance):
+    match ASSESSOR_TYPE:
+        case AssesorType.LLAMA:
+            return assesor.assess_llama(prompt)
+        case AssesorType.RANDOM:
+            return assesor.assess_random()
+        case AssesorType.POSITIVE_ORACLE:
+            return assesor.assess_positive_oracle(relevance)
+        case AssesorType.NEGATIVE_ORACLE:
+            return assesor.assess_negative_oracle(relevance)
+        case _:
+            return None
 
 cnt = 0
 with open(OUTPUT_FILE, 'w') as f:
     try:
         assesments = {}
         for line in prompt_df.to_numpy():
+            cnt += 1
             print(f"Line {cnt}", flush=True)
             prompt, relevance, query_id, doc_id = line
-            response = client.generate(model='llama3.1', prompt=prompt, options={
-                'temperature': 0.0,
-                'top_p': 1.0,
-                'num_predict': 50,
-            }, format='json')['response']
-            cnt += 1
+            response = get_response(prompt, relevance)
             f.write(f'Prompt {cnt}: {response}\n\n')
-            response = parse_response(response)
 
             if response is not None:
                 if query_id not in assesments:
@@ -87,4 +58,4 @@ with open(OUTPUT_FILE, 'w') as f:
 
     f.write(f'\n\n\nMAE: {mean_absolute_error(relevances, responses)}\n')
     f.write(f'Kappa Coefficient: {cohen_kappa_score(relevances, responses)}\n')
-    f.write(f'AUC: {calculate_auc(assesments)}\n')
+    f.write(f'AUC: {calculate_auc(assesments, QREL_PATH)}\n')

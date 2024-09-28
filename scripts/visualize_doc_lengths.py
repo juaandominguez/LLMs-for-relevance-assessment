@@ -1,4 +1,4 @@
-from utils.utils import extract_document_text
+from utils.functions import extract_document_text
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt

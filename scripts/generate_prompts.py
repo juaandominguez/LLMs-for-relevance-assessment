@@ -1,4 +1,4 @@
-from utils.utils import process_prompt, parse_topics, extract_document_text
+from utils.functions import process_prompt, parse_topics, extract_document_text
 import pandas as pd
 import json
 
