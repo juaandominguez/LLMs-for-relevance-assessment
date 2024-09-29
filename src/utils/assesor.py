@@ -17,7 +17,6 @@ class Assesor:
     def assess_random():
         return random.choice([0, 1, 2])
 
-    @staticmethod
     def assess_llama(prompt):
         response = client.generate(model='llama3.1', prompt=prompt, options={
             'temperature': 0.0,
