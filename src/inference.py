@@ -5,7 +5,7 @@ from utils.assesor import Assesor, AssesorType
 
 PROMPTS_PATH = 'data/processed/pooling_prompts.jsonl'
 QREL_PATH = 'data/processed/pooling_pairs.csv'
-OUTPUT_FILE = 'data/processed/results-with-prompts-pooling-8b.txt'
+OUTPUT_FILE = 'data/processed/aucpooling.txt'
 ASSESSOR_TYPE = AssesorType.POSITIVE_ORACLE
 assesor = Assesor()
 
