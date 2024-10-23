@@ -2,10 +2,6 @@ import random
 from ollama import Client
 from enum import Enum
 from utils.functions import parse_response
-import random
-
-RELEVANT_PROB = 0.94
-HIGHLY_RELEVANT_PROB = 0.06
 
 class AssesorType(Enum):
     RANDOM = 0
@@ -37,11 +33,4 @@ class Assesor:
 
     @staticmethod
     def assess_negative_oracle(relevance):
-        if relevance == 0:
-            rand = random.random()
-            if rand < RELEVANT_PROB:
-                return 1
-            else:
-                return 2
-        else:
-            return 0
+        return 1 if relevance == 0 else 0
