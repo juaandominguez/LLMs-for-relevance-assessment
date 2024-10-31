@@ -15,10 +15,10 @@ doc_lengths = []
 for line in docs_df.to_numpy():
     doc_id, doc_path = line
     document_text = extract_document_text('/mnt/runs/students/juan.dominguezr/TFG/' + doc_path, doc_id)
-    doc_lengths.append(len(document_text))
+    doc_lengths.append((len(document_text), doc_id))
 
 # Convert to DataFrame
-doc_df = pd.DataFrame(doc_lengths, columns=['length'])
+doc_df = pd.DataFrame(doc_lengths, columns=['length', 'doc_id'])
 
 # Apply log transformation ONLY for plotting purposes (no data loss)
 doc_df['log_length'] = np.log1p(doc_df['length'])  # log1p to handle zero lengths, if any
@@ -50,3 +50,8 @@ plt.ylabel('Density', fontsize=14)
 
 # Save original plot
 plt.savefig(OUTPUT_FILE.replace('fixed', 'original'))
+
+print('Top 50 document with the shortest lengths:')
+print(doc_df.nsmallest(50, 'length'))
+
+print('Mean document length:', doc_df['length'].mean())

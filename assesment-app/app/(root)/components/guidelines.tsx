@@ -8,6 +8,7 @@ import {
     CardTitle,
 } from "@/components/ui/card"
 import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 
 
 const PromptInfo = () => {
@@ -39,7 +40,9 @@ const PromptInfo = () => {
             <CardFooter>
                 <div className='w-full flex flex-col md:flex-row justify-between items-center gap-y-2'>
                     <p className='text-sm opacity-70'>You can always re-read these guidelines in the left sidebar</p>
-                    <Button size={'lg'}>Continue</Button>
+                    <Link href='/assessment'>
+                        <Button size={'lg'}>Continue</Button>
+                    </Link>
                 </div>
             </CardFooter>
         </Card>
