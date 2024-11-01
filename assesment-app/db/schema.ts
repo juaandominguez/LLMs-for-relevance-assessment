@@ -17,6 +17,7 @@ export const users = pgTable("user", {
     .$defaultFn(() => crypto.randomUUID()),
   name: text("name"),
   email: text("email").unique(),
+  password: text("password"),
   emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: text("image"),
 });
@@ -87,3 +88,16 @@ export const authenticators = pgTable(
     }),
   })
 );
+
+export const assessments = pgTable("assessment", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  pairId: integer("pair_id"),
+  value: integer("value"),
+  userId: text("userId")
+    .notNull()
+    .references(() => users.id, { onDelete: "no action" }),
+  createdAt: timestamp("createdAt", { mode: "date" }).notNull(),
+  updatedAt: timestamp("updatedAt", { mode: "date" }).notNull(),
+});

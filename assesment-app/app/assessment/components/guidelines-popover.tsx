@@ -1,62 +1,44 @@
+"use client"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
 
+import { useState } from "react"
+
 export function GuidelinesPopover() {
+    const [isOpen, setIsOpen] = useState(false)
     return (
-        <Popover>
-            <PopoverTrigger asChild>
-                <Button variant="outline">Show Guidelines</Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-80">
-                <div className="grid gap-4">
-                    <div className="space-y-2">
-                        <h4 className="font-medium leading-none">Dimensions</h4>
-                        <p className="text-sm text-muted-foreground">
-                            Set the dimensions for the layer.
-                        </p>
-                    </div>
-                    <div className="grid gap-2">
-                        <div className="grid grid-cols-3 items-center gap-4">
-                            <Label htmlFor="width">Width</Label>
-                            <Input
-                                id="width"
-                                defaultValue="100%"
-                                className="col-span-2 h-8"
-                            />
+        <>
+            {isOpen && <div className="fixed inset-0 bg-black bg-opacity-50"></div>}
+            <div className={`sticky top-[5dvh]`}>
+                <Popover open={isOpen} onOpenChange={setIsOpen}>
+                    <PopoverTrigger asChild>
+                        <Button variant="outline">Show Guidelines</Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[400px] sm:w-[550px] md:w-[650px]">
+                        <div className='text-lg space-y-6'>
+                            <p>
+                                Given a query and a web page, you must select a score on an integer scale of 0 to 2 with the following meanings:
+                            </p>
+                            <p>
+                                2 = highly relevant, very helpful for this query
+                                <br />
+                                1 = relevant, may be partly helpful but might contain other irrelevant content
+                                <br />
+                                0 = not relevant, should never be shown for this query
+                            </p>
+                            <p>
+                                Assume that you are writing a report on the subject of the topic.
+                                <br />
+                                If you would use any of the information contained in the web page in such a report, mark it 1. If the web page is primarily about the topic, or contains vital information about the topic, mark it 2. Otherwise, mark it 0.
+                            </p>
                         </div>
-                        <div className="grid grid-cols-3 items-center gap-4">
-                            <Label htmlFor="maxWidth">Max. width</Label>
-                            <Input
-                                id="maxWidth"
-                                defaultValue="300px"
-                                className="col-span-2 h-8"
-                            />
-                        </div>
-                        <div className="grid grid-cols-3 items-center gap-4">
-                            <Label htmlFor="height">Height</Label>
-                            <Input
-                                id="height"
-                                defaultValue="25px"
-                                className="col-span-2 h-8"
-                            />
-                        </div>
-                        <div className="grid grid-cols-3 items-center gap-4">
-                            <Label htmlFor="maxHeight">Max. height</Label>
-                            <Input
-                                id="maxHeight"
-                                defaultValue="none"
-                                className="col-span-2 h-8"
-                            />
-                        </div>
-                    </div>
-                </div>
-            </PopoverContent>
-        </Popover>
+                    </PopoverContent>
+                </Popover>
+            </div>
+        </>
     )
 }

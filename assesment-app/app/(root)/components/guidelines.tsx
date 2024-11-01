@@ -39,7 +39,7 @@ const PromptInfo = () => {
             </CardContent>
             <CardFooter>
                 <div className='w-full flex flex-col md:flex-row justify-between items-center gap-y-2'>
-                    <p className='text-sm opacity-70'>You can always re-read these guidelines in the left sidebar</p>
+                    <p className='text-sm opacity-70'>You can always re-read these guidelines at the top of the page</p>
                     <Link href='/assessment'>
                         <Button size={'lg'}>Continue</Button>
                     </Link>
