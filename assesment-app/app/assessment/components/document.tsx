@@ -12,8 +12,8 @@ const Document: React.FC<DocumentProps> = ({ docHtml, relevance }) => {
             <div className='w-[80%] max-w-[800px] lg:order-2 col-span-2'>
                 <div dangerouslySetInnerHTML={{ __html: docHtml }} className='space-y-6' />
             </div>
-            <Handler right={false} className='lg:order-1' />
-            <Handler right={true} disabled={relevance === null} className='lg:order-3' />
+            <Handler right={false} className='lg:order-1' relevance={relevance} />
+            <Handler right={true} disabled={relevance === null} className='lg:order-3' relevance={relevance} />
         </article>
     )
 }

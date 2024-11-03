@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react'
 import MainInfo from './main-info'
 import Relevances from './relevances'
 import { Pair as PairT } from '@/types'
+import { SessionProvider } from "next-auth/react";
 
 interface PairProps {
     pair: PairT
@@ -16,10 +17,10 @@ const Pair: React.FC<PairProps> = ({ pair }) => {
     }, [pair])
 
     return (
-        <>
+        <SessionProvider>
             <MainInfo relevance={relevance} pair={pair} />
             <Relevances relevance={relevance} setRelevance={setRelevance} />
-        </>
+        </SessionProvider>
     )
 }
 

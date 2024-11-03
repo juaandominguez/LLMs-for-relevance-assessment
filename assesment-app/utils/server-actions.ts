@@ -1,5 +1,6 @@
 "use server";
 import { signIn } from "@/auth";
+import { createAssesment } from "@/db/queries";
 
 export const loginWithCredentials = async (email: string, password: string) => {
   await signIn("credentials", {
@@ -41,4 +42,12 @@ export const loginWithGoogle = async () => {
 
 export const logout = async () => {
   await signIn("signout");
+};
+
+export const submitAssessment = async (
+  userId: string,
+  pairId: number,
+  score: number
+) => {
+  await createAssesment(userId, pairId, score);
 };

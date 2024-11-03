@@ -1,6 +1,7 @@
 import React from 'react'
 import RelevanceButton from './relevance-button'
 
+
 interface RelevancesProps {
     relevance: number | null
     setRelevance: (relevance: number | null) => void

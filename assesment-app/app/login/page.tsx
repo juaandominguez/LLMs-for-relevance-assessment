@@ -13,7 +13,7 @@ const MainPage = () => {
             await loginAsGuest()
         }
         catch (error) {
-            if (error.message === 'NEXT_REDIRECT') {
+            if ((error as Error).message === 'NEXT_REDIRECT') {
                 toast.success("Logged in as a Guest")
                 return
             }
@@ -27,18 +27,14 @@ const MainPage = () => {
         return <></>
     }
     return (
-        <>
-            {
-                register ? (<></>) : (
-                    <section className="min-w-[100dvw] min-h-[100dvh] flex flex-col items-center justify-center gap-y-4">
-                        <LoginCard setRegister={setRegister} />
-                        <button className="text-xl text-muted-foreground cursor-pointer transition-all duration-100 hover:border-b p-1 h-8"
-                            onClick={onGuestLogin}>
-                            Or login as a Guest
-                        </button>
-                    </section >
-                )}
-        </>
+
+        <section className="min-w-[100dvw] min-h-[100dvh] flex flex-col items-center justify-center gap-y-4">
+            <LoginCard isRegister={register} setRegister={setRegister} />
+            <button className="text-xl text-muted-foreground cursor-pointer transition-all duration-100 hover:border-b p-1 h-8"
+                onClick={onGuestLogin}>
+                Or login as a Guest
+            </button>
+        </section >
     )
 }
 

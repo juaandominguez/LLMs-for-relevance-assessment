@@ -28,7 +28,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 
-import { loginWithCredentials, loginWithGithub, loginWithGoogle } from "@/utils/server-actions"
+import { loginWithCredentials, loginWithGithub, loginWithGoogle, registerWithCredentials } from "@/utils/server-actions"
 
 import toast from "react-hot-toast"
 
@@ -40,10 +40,11 @@ const formSchema = z.object({
 })
 
 interface Props {
+    isRegister: boolean
     setRegister: (val: boolean) => void
 }
 
-const LoginCard: React.FC<Props> = ({ setRegister }) => {
+const LoginCard: React.FC<Props> = ({ isRegister, setRegister }) => {
     const [isLoading, setIsLoading] = useState(false)
     const [isLoadingGithub, setIsLoadingGithub] = useState(false)
     const [isLoadingGoogle, setIsLoadingGoogle] = useState(false)
@@ -56,22 +57,29 @@ const LoginCard: React.FC<Props> = ({ setRegister }) => {
         }
     })
 
-    const onRegister = () => setRegister(true)
+    const onChange = () => {
+        setRegister(!isRegister)
+    }
 
     const onSubmit = async ({ email, password }: z.infer<typeof formSchema>) => {
         setIsLoading(true)
         try {
-            await loginWithCredentials(email, password)
+            if (isRegister) {
+                await registerWithCredentials(email, password)
+            }
+            else {
+                await loginWithCredentials(email, password)
+            }
         }
         catch (error) {
-            if (error.message === 'NEXT_REDIRECT') {
-                toast.success("Logged in as a Guest")
+            if ((error as Error).message === 'NEXT_REDIRECT') {
+                toast.success(`${isRegister ? "Account registered" : "Logged In"} successfully`)
                 return
             }
             if (process.env.NODE_ENV === "development") {
                 console.error(error)
             }
-            toast.error("Could not login. Please try again.")
+            toast.error(`Could not ${isRegister ? "register account" : "log in"}. Please try again.`)
         }
         finally {
             setIsLoading(false)
@@ -114,9 +122,12 @@ const LoginCard: React.FC<Props> = ({ setRegister }) => {
         <Card className="sm:max-w-[425px] w-full">
             <CardContent>
                 <CardHeader>
-                    <CardTitle className="text-xl text-center">Login</CardTitle>
+                    <CardTitle className="text-xl text-center">
+                        {isRegister ? "Register" : "Login"}
+                    </CardTitle>
                     <CardDescription className="text-center">
-                        Login to save your progress.
+                        {isRegister ? "Create an account to save your progress" : "Login to your account"
+                        }
                     </CardDescription>
                 </CardHeader>
                 <Form {...form}>
@@ -165,7 +176,7 @@ const LoginCard: React.FC<Props> = ({ setRegister }) => {
                 </div>
                 <CardFooter className="border-t flex justify-between pt-3 px-5 mt-4">
                     <p className="w-auto cursor-pointer text-muted-foreground text-sm">Forgot password?</p>
-                    <p className="w-auto cursor-pointer text-sm" onClick={onRegister}>Register here</p>
+                    <p className="w-auto cursor-pointer text-sm" onClick={onChange}>{isRegister ? "Login" : "Register"} here</p>
                 </CardFooter>
             </CardContent>
         </Card >

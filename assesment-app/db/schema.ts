@@ -5,6 +5,7 @@ import {
   text,
   primaryKey,
   integer,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
 import type { AdapterAccountType } from "next-auth/adapters";
 import { drizzle } from "drizzle-orm/vercel-postgres";
@@ -97,15 +98,21 @@ export const authenticators = pgTable(
   })
 );
 
-export const assessments = pgTable("assessment", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
-  pairId: integer("pair_id"),
-  value: integer("value"),
-  userId: text("userId")
-    .notNull()
-    .references(() => users.id, { onDelete: "no action" }),
-  createdAt: timestamp("createdAt", { mode: "date" }).notNull(),
-  updatedAt: timestamp("updatedAt", { mode: "date" }).notNull(),
-});
+export const assessments = pgTable(
+  "assessment",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    pairId: integer("pair_id"),
+    value: integer("value"),
+    userId: text("userId")
+      .notNull()
+      .references(() => users.id, { onDelete: "no action" }),
+    createdAt: timestamp("createdAt", { mode: "date" }).notNull(),
+    updatedAt: timestamp("updatedAt", { mode: "date" }).notNull(),
+  },
+  (table) => ({
+    unq: uniqueIndex("user_pair_idx").on(table.pairId, table.userId),
+  })
+);
