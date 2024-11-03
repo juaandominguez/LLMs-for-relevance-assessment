@@ -45,13 +45,13 @@ const Handler: React.FC<HandleProps> = ({ right, disabled = false, className, re
     if (!pair) return null
 
     const handleClick = async () => {
-        if (pairs.length === intPair) {
+        if (right) {
             await onClickRight()
-            router.push('/result')
-        }
-        else if (right) {
-            await onClickRight()
-            router.push(`/assessment?pair=${nextPair}`)
+            if (pairs.length === intPair) {
+                router.push('/result')
+            } else {
+                router.push(`/assessment?pair=${nextPair}`)
+            }
         } else {
             router.push(`/assessment?pair=${intPair - 1}`)
         }
