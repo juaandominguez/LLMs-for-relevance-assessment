@@ -20,6 +20,14 @@ export const users = pgTable("user", {
   password: text("password"),
   emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: text("image"),
+  isGuest: boolean("isGuest").$defaultFn(() => false),
+  lastAssessment: integer("lastAssessment").$defaultFn(() => 0),
+  createdAt: timestamp("createdAt", { mode: "date" }).$defaultFn(
+    () => new Date()
+  ),
+  updatedAt: timestamp("updatedAt", { mode: "date" }).$defaultFn(
+    () => new Date()
+  ),
 });
 
 export const accounts = pgTable(

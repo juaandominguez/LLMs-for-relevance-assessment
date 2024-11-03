@@ -4,3 +4,9 @@ export type Topic = {
   description: string;
   narrative: string;
 };
+
+export type Pair = {
+  id: number;
+  topicId: number;
+  documentId: string;
+};

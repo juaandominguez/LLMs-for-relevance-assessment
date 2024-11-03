@@ -14,3 +14,15 @@ export const saltAndHashPassword = async (
     throw new Error("Error hashing password");
   }
 };
+
+export const comparePassword = async (
+  password: string,
+  hash: string
+): Promise<boolean> => {
+  try {
+    return await bcrypt.compare(password, hash);
+  } catch (err) {
+    console.error(err);
+    throw new Error("Error comparing password");
+  }
+};

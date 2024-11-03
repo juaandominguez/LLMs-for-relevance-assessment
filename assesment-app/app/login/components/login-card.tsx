@@ -64,10 +64,14 @@ const LoginCard: React.FC<Props> = ({ setRegister }) => {
             await loginWithCredentials(email, password)
         }
         catch (error) {
+            if (error.message === 'NEXT_REDIRECT') {
+                toast.success("Logged in as a Guest")
+                return
+            }
             if (process.env.NODE_ENV === "development") {
                 console.error(error)
             }
-            toast.error("Invalid credentials")
+            toast.error("Could not login. Please try again.")
         }
         finally {
             setIsLoading(false)

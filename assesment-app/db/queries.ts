@@ -1,11 +1,8 @@
 import { and, eq } from "drizzle-orm";
 import { db, users, assessments } from "./schema";
 
-export const getUser = async (email: string, password: string) => {
-  const user = await db
-    .select()
-    .from(users)
-    .where(and(eq(users.email, email), eq(users.password, password)));
+export const getUser = async (email: string) => {
+  const user = await db.select().from(users).where(eq(users.email, email));
 
   if (!user) {
     return null;
@@ -20,13 +17,32 @@ export const createUser = async (email: string, password: string) => {
       .values({
         email,
         password,
+        isGuest: false,
       })
       .onConflictDoNothing()
       .returning();
 
-    return user[0] || (await getUser(email, password));
+    console.log(user);
+
+    return user[0] || (await getUser(email));
   } catch (e) {
     console.error("Error creating user:", e);
+    throw e;
+  }
+};
+
+export const createGuestUser = async () => {
+  try {
+    const user = await db
+      .insert(users)
+      .values({
+        isGuest: true,
+      })
+      .returning();
+
+    return user[0];
+  } catch (e) {
+    console.error("Error creating guest user:", e);
     throw e;
   }
 };
@@ -66,6 +82,29 @@ export const createAssesment = async (
         },
       })
       .returning();
+
+    const currentLastAssessment = await db
+      .select({ lastAssessment: users["lastAssessment"] })
+      .from(users)
+      .where(eq(users.id, userId));
+
+    if (!currentLastAssessment[0].lastAssessment) {
+      await db
+        .update(users)
+        .set({
+          lastAssessment: pairId,
+          updatedAt: new Date(),
+        })
+        .where(eq(users.id, userId));
+    } else if (currentLastAssessment[0].lastAssessment < pairId) {
+      await db
+        .update(users)
+        .set({
+          lastAssessment: pairId,
+          updatedAt: new Date(),
+        })
+        .where(eq(users.id, userId));
+    }
     return assesment[0] || getAssesment(userId, pairId);
   } catch (e) {
     console.error("Error creating assessment:", e);

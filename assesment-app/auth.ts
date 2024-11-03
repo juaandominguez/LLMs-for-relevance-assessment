@@ -2,10 +2,10 @@ import NextAuth from "next-auth";
 import GitHub from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
-import { saltAndHashPassword } from "@/utils/password";
+import { saltAndHashPassword, comparePassword } from "@/utils/password";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { db } from "./db/schema";
-import { getUser, createUser } from "./db/queries";
+import { getUser, createUser, createGuestUser } from "./db/queries";
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: DrizzleAdapter(db),
   providers: [
@@ -13,34 +13,60 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     Google,
     Credentials({
       credentials: {
-        email: {},
-        password: {},
-        isLogin: {},
+        email: {
+          label: "Email",
+          type: "email",
+        },
+        password: {
+          label: "Password",
+          type: "password",
+        },
+        isLogin: {
+          label: "Login",
+          type: "boolean",
+        },
+        isGuest: {},
       },
       authorize: async (credentials) => {
-        let user = null;
+        try {
+          let user = null;
 
-        const pwHash = await saltAndHashPassword(
-          credentials.password as string
-        );
-
-        if (credentials.isLogin === "true") {
-          user = await getUser(credentials.email as string, pwHash);
-
-          if (!user) {
-            throw new Error("Invalid credentials.");
+          if (credentials.isGuest === "true") {
+            user = await createGuestUser();
+            if (!user) {
+              throw new Error("Could not create guest user.");
+            }
+            return user;
           }
-        } else {
-          user = await createUser(credentials.email as string, pwHash);
-          if (!user) {
-            throw new Error("Could not create user.");
+
+          if (credentials.isLogin === "true") {
+            user = await getUser(credentials.email as string);
+            const passwordMatch = await comparePassword(
+              credentials.password as string,
+              user?.password || ""
+            );
+
+            if (!user || !passwordMatch) {
+              throw new Error("Invalid credentials.");
+            }
+          } else {
+            const pwHash = await saltAndHashPassword(
+              credentials.password as string
+            );
+            user = await createUser(credentials.email as string, pwHash);
+            if (!user) {
+              throw new Error("Could not create user.");
+            }
           }
+          return user;
+        } catch (error) {
+          console.error("Authorization error:", error);
+          throw error;
         }
-        return user;
       },
     }),
   ],
-  pages: {
-    signIn: "/login",
+  session: {
+    strategy: "jwt",
   },
 });
