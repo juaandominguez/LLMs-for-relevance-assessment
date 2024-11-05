@@ -1,3 +1,4 @@
+"use client"
 import { LogOut } from "lucide-react"
 import { logout } from "@/utils/server-actions"
 
@@ -16,6 +17,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { User } from "next-auth"
+import toast from "react-hot-toast"
 
 interface NavbarAvatarProps {
     user: User
@@ -24,6 +26,12 @@ interface NavbarAvatarProps {
 const NavbarAvatar: React.FC<NavbarAvatarProps> = ({
     user,
 }) => {
+
+    const onLogout = async () => {
+        await logout()
+        toast.success('Logged out successfully')
+    }
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger>
@@ -41,7 +49,7 @@ const NavbarAvatar: React.FC<NavbarAvatarProps> = ({
             <DropdownMenuContent>
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={logout}>
+                <DropdownMenuItem onClick={onLogout}>
                     <LogOut />
                     <span>Log out</span>
                 </DropdownMenuItem>
