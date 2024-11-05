@@ -46,7 +46,7 @@ const Handler: React.FC<HandleProps> = ({ right, disabled = false, className, re
 
     const handleClick = async () => {
         if (right) {
-            await onClickRight()
+            onClickRight()
             if (pairs.length === intPair) {
                 router.push('/result')
             } else {
