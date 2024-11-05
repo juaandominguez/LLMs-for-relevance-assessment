@@ -19,7 +19,7 @@ const Page = async ({
     }
 
     return (
-        <section className="min-h-[100dvh] flex flex-col items-center justify-center pb-20 pt-10">
+        <section className="min-h-[95dvh] flex flex-col items-center justify-center pb-20 pt-10">
             <GuidelinesPopover />
             <Pair pair={selectedPair!} />
         </section>

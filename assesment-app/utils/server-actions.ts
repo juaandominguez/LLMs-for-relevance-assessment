@@ -1,5 +1,5 @@
 "use server";
-import { signIn } from "@/auth";
+import { signIn, signOut } from "@/auth";
 import { createAssesment } from "@/db/queries";
 
 export const loginWithCredentials = async (email: string, password: string) => {
@@ -41,7 +41,7 @@ export const loginWithGoogle = async () => {
 };
 
 export const logout = async () => {
-  await signIn("signout");
+  await signOut();
 };
 
 export const submitAssessment = async (
