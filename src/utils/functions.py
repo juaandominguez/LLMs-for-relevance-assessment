@@ -27,9 +27,11 @@ def calculate_auc(assesments, qrel_path):
             else:
                 pairs = list(combinations(range(len(doc_id_list)), 2))
                 for i, j in pairs:
-                    equal_response = 1 if assesments[query_id][doc_id_list[i]]['response'] == assesments[query_id][doc_id_list[j]]['response'] else 0
-                    equal_relevance = 1 if assesments[query_id][doc_id_list[i]]['relevance'] == assesments[query_id][doc_id_list[j]]['relevance'] else 0
-                    all_pairs.append((query_id, doc_id_list[i], doc_id_list[j], equal_relevance, equal_response))
+                    if assesments[query_id][doc_id_list[i]]['relevance'] == assesments[query_id][doc_id_list[j]]['relevance']:
+                        continue
+                    golden_relevance = 1 if assesments[query_id][doc_id_list[i]]['relevance'] > assesments[query_id][doc_id_list[j]]['relevance'] else 0
+                    response = 1 if assesments[query_id][doc_id_list[i]]['response'] > assesments[query_id][doc_id_list[j]]['response'] else 0
+                    all_pairs.append((query_id, doc_id_list[i], doc_id_list[j], golden_relevance, response))
         except KeyError as e:
             pass
 
