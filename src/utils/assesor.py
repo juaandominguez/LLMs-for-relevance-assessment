@@ -11,14 +11,14 @@ class AssesorType(Enum):
 
 class Assesor:
     def __init__(self):
-        client = Client(host='http://localhost:11434')
+        self.client = Client(host='http://localhost:11434')
 
     @staticmethod
     def assess_random():
         return random.choice([0, 1, 2])
 
-    def assess_llama(prompt):
-        response = client.generate(model='llama3.1', prompt=prompt, options={
+    def assess_llama(self, prompt):
+        response = self.client.generate(model='llama3.1', prompt=prompt, options={
             'temperature': 0.0,
             'top_p': 1.0,
             'num_predict': 50,
