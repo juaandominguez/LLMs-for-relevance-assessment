@@ -104,8 +104,8 @@ export const assessments = pgTable(
     id: text("id")
       .primaryKey()
       .$defaultFn(() => crypto.randomUUID()),
-    pairId: integer("pair_id"),
-    value: integer("value"),
+    pairId: integer("pair_id").notNull(),
+    value: integer("value").notNull(),
     userId: text("userId")
       .notNull()
       .references(() => users.id, { onDelete: "no action" }),

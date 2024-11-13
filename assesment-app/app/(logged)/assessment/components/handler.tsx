@@ -48,7 +48,7 @@ const Handler: React.FC<HandleProps> = ({ right, disabled = false, className, re
         if (right) {
             onClickRight()
             if (pairs.length === intPair) {
-                router.push('/result')
+                router.push('/results')
             } else {
                 router.push(`/assessment?pair=${nextPair}`)
             }

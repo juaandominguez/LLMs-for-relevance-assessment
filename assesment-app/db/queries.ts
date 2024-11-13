@@ -1,4 +1,4 @@
-import { and, eq } from "drizzle-orm";
+import { and, count, eq } from "drizzle-orm";
 import { db, users, assessments } from "./schema";
 
 export const getUser = async (email: string) => {
@@ -110,4 +110,18 @@ export const createAssesment = async (
     console.error("Error creating assessment:", e);
     throw e;
   }
+};
+
+export const getGroupedAssesments = async () => {
+  const ret = await db
+    .select({
+      pairId: assessments.pairId,
+      value: assessments.value,
+      count: count(assessments.value),
+    })
+    .from(assessments)
+    .groupBy(assessments.pairId, assessments.value)
+    .orderBy(assessments.pairId);
+
+  return ret;
 };
