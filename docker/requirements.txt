@@ -1,3 +1,4 @@
 pandas
 ollama
 scikit-learn
+pytrec_eval
