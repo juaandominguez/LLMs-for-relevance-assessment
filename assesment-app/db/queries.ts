@@ -1,5 +1,5 @@
-import { and, count, eq } from "drizzle-orm";
-import { db, users, assessments } from "./schema";
+import { and, count, desc, eq } from "drizzle-orm";
+import { db, users, assessments, pairs } from "./schema";
 
 export const getUser = async (email: string) => {
   const user = await db.select().from(users).where(eq(users.email, email));
@@ -124,4 +124,76 @@ export const getGroupedAssesments = async () => {
     .orderBy(assessments.pairId);
 
   return ret;
+};
+
+export const getAllAssesmentsByUser = async (userId: string) => {
+  const assesments = await db
+    .select()
+    .from(assessments)
+    .where(eq(assessments.userId, userId));
+
+  return assesments;
+};
+
+export const createPair = async (
+  pairId: number,
+  queryId: number,
+  queryTitle: string,
+  queryDescription: string,
+  queryNarrative: string,
+  documentId: string,
+  documentText: string,
+  originalRelevance: number,
+  llmRelevance: number
+) => {
+  const pair = await db
+    .insert(pairs)
+    .values([
+      {
+        id: pairId,
+        queryId,
+        queryTitle,
+        queryDescription,
+        queryNarrative,
+        documentId,
+        documentText,
+        originalRelevance,
+        llmRelevance,
+        createdAt: new Date(),
+      },
+    ])
+    .onConflictDoUpdate({
+      target: [pairs.id],
+      set: {
+        queryId,
+        queryTitle,
+        queryDescription,
+        queryNarrative,
+        documentId,
+        documentText,
+        originalRelevance,
+        llmRelevance,
+        createdAt: new Date(),
+      },
+    })
+    .returning();
+
+  return pair[0];
+};
+
+export const getAllPairs = async () => {
+  const allPairs = (await db.select().from(pairs)).sort((a, b) => a.id - b.id);
+
+  return allPairs;
+};
+
+export const getLastAssessmentFromUser = async (userId: string) => {
+  const lastAssessment = await db
+    .select()
+    .from(assessments)
+    .where(eq(assessments.userId, userId))
+    .orderBy(desc(assessments.updatedAt))
+    .limit(1);
+
+  return lastAssessment[0]?.pairId || 0;
 };

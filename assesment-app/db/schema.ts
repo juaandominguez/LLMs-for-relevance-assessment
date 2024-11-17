@@ -98,13 +98,28 @@ export const authenticators = pgTable(
   })
 );
 
+export const pairs = pgTable("pair", {
+  id: integer("id").primaryKey(),
+  queryId: integer("query_id").notNull(),
+  queryTitle: text("query_title").notNull(),
+  queryDescription: text("query_description").notNull(),
+  queryNarrative: text("query_narrative").notNull(),
+  documentId: text("document_id").notNull(),
+  documentText: text("document_text").notNull(),
+  originalRelevance: integer("original_relevance").notNull(),
+  llmRelevance: integer("llm_relevance").notNull(),
+  createdAt: timestamp("createdAt", { mode: "date" }).notNull(),
+});
+
 export const assessments = pgTable(
   "assessment",
   {
     id: text("id")
       .primaryKey()
       .$defaultFn(() => crypto.randomUUID()),
-    pairId: integer("pair_id").notNull(),
+    pairId: integer("pairId")
+      .notNull()
+      .references(() => pairs.id),
     value: integer("value").notNull(),
     userId: text("userId")
       .notNull()
