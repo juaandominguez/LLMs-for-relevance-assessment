@@ -3,7 +3,7 @@ import RightArrow from '@/app/icons/right-arrow'
 import React, { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSearchParams } from 'next/navigation'
-import pairs from '@/data/pairs.json'
+import docs_db from '@/data/docs_db.json'
 import { useSession } from 'next-auth/react'
 import { submitAssessment } from '@/utils/server-actions'
 import toast from 'react-hot-toast'
@@ -37,7 +37,7 @@ const Handler: React.FC<HandleProps> = ({ right, disabled = false, className, re
     }
 
     useEffect(() => {
-        if (pairs.length > intPair) {
+        if (docs_db.length > intPair) {
             setNextPair(intPair + 1)
         }
     }, [intPair, router])
@@ -47,7 +47,7 @@ const Handler: React.FC<HandleProps> = ({ right, disabled = false, className, re
     const handleClick = async () => {
         if (right) {
             onClickRight()
-            if (pairs.length === intPair) {
+            if (docs_db.length === intPair) {
                 router.push('/results')
             } else {
                 router.push(`/assessment?pair=${nextPair}`)

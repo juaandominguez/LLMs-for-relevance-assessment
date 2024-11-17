@@ -10,7 +10,7 @@ const Topic: React.FC<TopicProps> = ({ topic }) => {
   return (
     <Card className="w-[80%] max-w-[800px]">
       <CardHeader>
-        <CardTitle>{topic.title}</CardTitle>
+        <CardTitle>{`${topic.title[0].toUpperCase()}${topic.title.slice(1)}`}</CardTitle>
         <CardDescription>{topic.description}</CardDescription>
       </CardHeader>
       <CardContent>
