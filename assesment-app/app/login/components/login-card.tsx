@@ -18,6 +18,7 @@ import {
     FormLabel,
     FormMessage
 } from "@/components/ui/form"
+import { useRouter } from "next/navigation"
 
 import GitHubIcon from "@/app/icons/github-icon"
 import GoogleIcon from "@/app/icons/google-icon"
@@ -45,6 +46,8 @@ const LoginCard = () => {
     const [isLoadingGoogle, setIsLoadingGoogle] = useState(false)
     const [isRegister, setIsRegister] = useState(false)
 
+
+    const router = useRouter()
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -70,6 +73,7 @@ const LoginCard = () => {
         catch (error) {
             if ((error as Error).message === 'NEXT_REDIRECT') {
                 toast.success(`${isRegister ? "Account registered" : "Logged In"} successfully`)
+                router.push('/')
                 return
             }
             if (process.env.NODE_ENV === "development") {
@@ -98,6 +102,7 @@ const LoginCard = () => {
         catch (error) {
             if ((error as Error).message === 'NEXT_REDIRECT') {
                 toast.success("Logged in as a Guest")
+                router.push('/')
                 return
             }
             if (process.env.NODE_ENV === "development") {
