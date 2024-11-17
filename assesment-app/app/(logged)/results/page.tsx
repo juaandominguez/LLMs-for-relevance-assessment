@@ -1,19 +1,27 @@
 import React from 'react'
-import Component from './prueba'
-import { getGroupedAssesments } from "@/db/queries"
+import { getGroupedAssesments, getAllPairs } from "@/db/queries"
+import DataDashboard from './data-dashboard'
 
 
 const Page = async () => {
-    const assessments = await getGroupedAssesments()
+    const [assessments, pairs] = await Promise.all([getGroupedAssesments(), getAllPairs()]);
+
+    const assessmentMap = new Map(pairs.map((pair) => [pair.id, {
+        id: pair.id,
+        originalRelevance: pair.originalRelevance > 0 ? 1 : 0,
+    }]));
 
     const parsedAssessments = assessments.reduce((acc: { [key: number]: { golden: number; llm: number } }, { pairId, value, count }) => {
         if (!acc[pairId]) {
             acc[pairId] = { golden: 0, llm: 0 };
         }
+        const binaryValue = value >= 1 ? 1 : 0;
+        const originalRelevance = assessmentMap.get(pairId)?.originalRelevance;
 
-        if (value === 0) {
+        if (binaryValue === originalRelevance) {
             acc[pairId].golden += count;
-        } else if (value > 0) {
+        }
+        else {
             acc[pairId].llm += count;
         }
 
@@ -21,17 +29,12 @@ const Page = async () => {
     }, {});
 
     const parsedAssessmentsArray = Object.entries(parsedAssessments).map(([pair, { golden, llm }]) => ({
-        pair: `Pair ${pair}`,
+        pair,
         golden,
         llm,
     }));
     return (
-        <article className='flex items-center justify-center flex-col space-y-4 w-full'>
-            <h1 className='text-2xl font-semibold tracking-tighter'>Number of agreements</h1>
-            <div className='flex border-2 rounded-md p-5 bg-white w-full'>
-                <Component assessment={parsedAssessmentsArray} />
-            </div>
-        </article>
+        <DataDashboard data={parsedAssessmentsArray} />
     )
 }
 
