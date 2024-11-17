@@ -1,4 +1,4 @@
-import Navbar from "@/components/navbar";
+import Navbar from "@/components/navbar/navbar";
 
 export default function LoggedLayout({
   children,
@@ -8,7 +8,7 @@ export default function LoggedLayout({
   return (
     <>
       <Navbar />
-      <section className="min-w-[95dvw] min-h-[93dvh] h-full flex flex-col items-center justify-center pb-[10dvh] space-y-[8dvh]">
+      <section className="h-full w-full flex flex-col items-center justify-center pb-[10dvh]">
         {children}
       </section>
     </>
