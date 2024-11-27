@@ -2,6 +2,7 @@ import re
 import pandas as pd
 
 PROMPT_TEMPLATE_PATH = '/mnt/runs/students/juan.dominguezr/TFG/data/raw/prompt_template.txt'
+PROMPT_TEMPLATE_PATH_MSMARCO = '/mnt/runs/students/juan.dominguezr/TFG/data/raw/prompt_template_msmarco.txt'
 
 def extract_topic_info(topic_text):
     num_match = re.search(r'<num>\s*Number:\s*(\d+)', topic_text)
@@ -40,6 +41,13 @@ def process_prompt(query, description, narrative, document_text):
         prompt = prompt.replace('<query>', query)\
         .replace('<description>', description)\
         .replace('<narrative>', narrative)\
+        .replace('<document_text>', document_text)
+        return prompt
+
+def process_prompt_msmarco(query, document_text):
+    with open(PROMPT_TEMPLATE_PATH_MSMARCO, 'r', encoding='utf-8') as file:
+        prompt = file.read()
+        prompt = prompt.replace('<query>', query)\
         .replace('<document_text>', document_text)
         return prompt
 
