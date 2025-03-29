@@ -2,3 +2,5 @@ pandas
 ollama
 scikit-learn
 pytrec_eval
+ir_datasets
+unsloth
