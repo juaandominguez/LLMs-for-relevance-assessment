@@ -198,7 +198,6 @@ class PromptGenerator:
                     print(f"Writing results to {jsonl_spark_path}")
                     jsonl_df.repartition(10).write.mode("overwrite").text(jsonl_spark_path)
                     
-                    # Instead of collecting all results to driver, write a smaller sample
                     try:
                         sample_size = min(100, jsonl_df.count())
                         sample_path = f"{self.output_path}.sample"

@@ -20,7 +20,6 @@ def main():
         send_to_kafka=True
     )
     
-    # Create sampling strategy with reduced pooling depth
     sampling_strategy = PoolingSampling(
         runs_path="data/processed/runs",
         qrel_path="data/processed/qrels.robust04.300-450.600-700.trec.txt",
@@ -28,7 +27,6 @@ def main():
         output_path="data/processed/etl/stratified_sampling_pairs.csv"
     )
     
-    # Create and run pipeline
     pipeline = ETLPipeline(config, sampling_strategy)
     pipeline.run()
 

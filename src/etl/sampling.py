@@ -52,14 +52,12 @@ class StratifiedSampling(Sampling):
         df = df.toDF("TOPIC", "Q0", "DOCUMENT", "RELEVANCE")
         df = df.drop("Q0")
         
-        # Perform stratified sampling directly in Spark
         window = Window.partitionBy("RELEVANCE")
         df = df.withColumn("random", F.rand())
         df = df.withColumn("row_num", F.row_number().over(window.orderBy("random")))
         df = df.filter(F.col("row_num") <= self.num_samples)
         result_df = df.drop("random", "row_num")
         
-        # Save if output path is provided
         if self.output_path:
             try:
                 # Create directory for consolidated file if it doesn't exist
@@ -141,16 +139,12 @@ class PoolingSampling(Sampling):
         # Remove duplicates
         pool_df = pool_df.distinct()
         
-        # Read qrel file 
         qrel_df = spark.read.csv(self.qrel_path, sep=' ', header=None)
         qrel_df = qrel_df.toDF("TOPIC", "Q0", "DOCUMENT", "RELEVANCE")
         qrel_df = qrel_df.drop("Q0")
         
-        # Broadcast the smaller DataFrame for memory efficiency
-        # Join with relevance information using broadcast join
         result_df = pool_df.join(F.broadcast(qrel_df), on=["TOPIC", "DOCUMENT"])
         
-        # Save if output path is provided
         if self.output_path:
             try:
                 # Create directory for consolidated file if it doesn't exist

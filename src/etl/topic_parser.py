@@ -32,7 +32,6 @@ class TopicParser:
             topics = [topic for topic in topics if topic.strip()]
             
             for topic in topics:
-                # Extract topic information exactly as in functions.py
                 num_match = re.search(r'<num>\s*Number:\s*(\d+)', topic)
                 title_match = re.search(r'<title>\s*(.*?)\s*(?=<desc>)', topic, re.DOTALL)
                 desc_match = re.search(r'<desc>\s*(Description:)?\s*(.*?)\s*(?=<narr>)', topic, re.DOTALL)
