@@ -71,8 +71,8 @@ services:
     build: .
     container_name: app
     volumes:
-    - ../src/etl:/app/etl
-    - ../data:/app/data
+    - ../../src/etl:/app/etl
+    - ../../data:/app/data
     networks:
       - app_network
 
