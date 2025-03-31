@@ -67,11 +67,8 @@ class StratifiedSampling(Sampling):
                 spark_output_path = f"{self.output_path}_spark"
                 result_df.repartition(10).write.option('header', False).mode("overwrite").csv(spark_output_path)
                 
-                # Optionally, save a smaller sample to a single file for easy access
-                # Only if the dataset is small enough to handle
                 try:
-                    small_sample = result_df.limit(1000)
-                    small_sample.toPandas().to_csv(self.output_path, index=False, header=False)
+                    result_df.toPandas().to_csv(self.output_path, index=False, header=False, sep=' ')
                 except Exception as e:
                     print(f"Warning: Could not save consolidated file due to: {e}")
                     print(f"Full data is still available at: {spark_output_path}")
@@ -154,10 +151,8 @@ class PoolingSampling(Sampling):
                 spark_output_path = f"{self.output_path}_spark"
                 result_df.repartition(10).write.option('header', False).mode("overwrite").csv(spark_output_path)
                 
-                # Optionally, save a smaller sample to a single file for easy access
                 try:
-                    small_sample = result_df.limit(1000)
-                    small_sample.toPandas().to_csv(self.output_path, index=False, header=False)
+                    result_df.toPandas().to_csv(self.output_path, index=False, header=False, sep=' ')
                 except Exception as e:
                     print(f"Warning: Could not save consolidated file due to: {e}")
                     print(f"Full data is still available at: {spark_output_path}")

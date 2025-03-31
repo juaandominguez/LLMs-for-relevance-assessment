@@ -199,19 +199,18 @@ class PromptGenerator:
                     jsonl_df.repartition(10).write.mode("overwrite").text(jsonl_spark_path)
                     
                     try:
-                        sample_size = min(100, jsonl_df.count())
-                        sample_path = f"{self.output_path}.sample"
-                        print(f"Writing sample of {sample_size} records to {sample_path}")
+                        sample_path = f"{self.output_path}"
+                        print(f"Writing all records to {sample_path}")
                         
-                        sample_rows = jsonl_df.limit(sample_size).collect()
+                        all_rows = jsonl_df.collect()
                         with open(sample_path, "w") as f:
-                            for row in sample_rows:
+                            for row in all_rows:
                                 f.write(f"{row['json_line']}\n")
                         
-                        print(f"Sample written to {sample_path}")
-                        print(f"Full data available in distributed format at {jsonl_spark_path}")
+                        print(f"All data written to {sample_path}")
+                        print(f"Full data also available in distributed format at {jsonl_spark_path}")
                     except Exception as e:
-                        print(f"Warning: Could not write sample file: {e}")
+                        print(f"Warning: Could not write file: {e}")
                 
                 except Exception as e:
                     print(f"Error saving results: {e}")

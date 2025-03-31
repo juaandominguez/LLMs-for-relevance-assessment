@@ -1,10 +1,10 @@
 from pipeline import ETLPipeline, ETLConfig
 from sampling import StratifiedSampling, PoolingSampling
-
+import time
 
 def main():
     """Run an example ETL pipeline"""
-    
+    start_time = time.time()
     # Create configuration with memory settings and checkpointing
     config = ETLConfig(
         spark_app_name="Stratified-Sampling-Example",
@@ -24,12 +24,12 @@ def main():
         runs_path="data/processed/runs",
         qrel_path="data/processed/qrels.robust04.300-450.600-700.trec.txt",
         pooling_depth=100,
-        output_path="data/processed/etl/stratified_sampling_pairs.csv"
+        output_path="data/processed/etl/pooling_pairs.csv"
     )
     
     pipeline = ETLPipeline(config, sampling_strategy)
     pipeline.run()
 
-
+    print(f"ETL pipeline completed in {time.time() - start_time:.2f} seconds")
 if __name__ == "__main__":
     main()

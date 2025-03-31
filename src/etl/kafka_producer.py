@@ -21,22 +21,33 @@ class KafkaProducer:
         self.topic = topic
         self.checkpoint_location = checkpoint_location
     
-    def send_batch(self, spark: SparkSession, data_df: DataFrame) -> None:
-        """Send a batch of data to Kafka.
+    def send_batch(self, spark, df):
+        """Send a batch of prompts to Kafka.
         
         Args:
             spark: SparkSession instance
-            data_df: DataFrame containing data to send
+            df: DataFrame containing prompts
         """
-        # Convert DataFrame to JSON format
-        json_df = data_df.select(to_json(struct([data_df[x] for x in data_df.columns])).alias("value"))
-        
-        # Write to Kafka
-        json_df.write \
-            .format("kafka") \
-            .option("kafka.bootstrap.servers", self.bootstrap_servers) \
-            .option("topic", self.topic) \
-            .save()
+        try:
+            print(f"Sending {df.count()} messages to Kafka topic {self.topic}")
+            
+            kafka_options = {
+                "kafka.bootstrap.servers": self.bootstrap_servers,
+                "topic": self.topic,
+                "kafka.max.request.size": "52428800",  # 50 MB
+            }
+            
+            # Convert DataFrame to JSON format
+            json_df = df.select(to_json(struct("*")).alias("value"))
+            
+            json_df.write \
+                .format("kafka") \
+                .options(**kafka_options) \
+                .save()
+            
+            print(f"Successfully sent {df.count()} messages to Kafka topic {self.topic}")
+        except Exception as e:
+            print(f"Error in Kafka Producer: {e}")
     
     def start_streaming(self, spark: SparkSession, data_df: DataFrame) -> None:
         """Start a streaming job to send data to Kafka.
