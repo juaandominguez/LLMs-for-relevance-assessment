@@ -27,7 +27,6 @@ export const users = pgTable("user", {
   emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: text("image"),
   role: text("role")
-    .notNull()
     .references(() => roles.name, { onDelete: "set null" })
     .$defaultFn(() => "basic"),
   lastAssessment: integer("lastAssessment").$defaultFn(() => 0),
