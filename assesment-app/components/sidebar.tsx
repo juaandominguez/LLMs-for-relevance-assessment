@@ -53,7 +53,7 @@ export async function AppSidebar() {
                                 >
                                     <Link href={`/assessment?pair=${pair.id}`} className="flex items-center justify-between w-full h-full px-4">
                                         <p className="max-w-[85%] break-words text-nowrap truncate">
-                                            {pair.id}. {pair.queryTitle[0].toUpperCase() + pair.queryTitle.slice(1)}
+                                            {pair.id}. {pair.queryTitle![0].toUpperCase() + pair.queryTitle!.slice(1)}
                                         </p>
                                         {assessment !== undefined ? (
                                             <Check />

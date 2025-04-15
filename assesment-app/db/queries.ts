@@ -231,7 +231,18 @@ export const createPair = async (
 };
 
 export const getAllPairs = async () => {
-  const allPairs = (await db.select().from(pairs)).sort((a, b) => a.id - b.id);
+  const allPairs = (
+    await db
+      .select({
+        id: pairs.id,
+        queryTitle: queries.title,
+        queryId: pairs.queryId,
+        originalRelevance: pairs.originalRelevance,
+        llmRelevance: pairs.llmRelevance,
+      })
+      .from(pairs)
+      .leftJoin(queries, eq(pairs.queryId, queries.id))
+  ).sort((a, b) => a.id - b.id);
 
   return allPairs;
 };
@@ -245,4 +256,16 @@ export const getLastAssessmentFromUser = async (userId: string) => {
     .limit(1);
 
   return lastAssessment[0]?.pairId || 0;
+};
+
+export const getUserRole = async (userId: string) => {
+  const user = await db
+    .select({
+      role: users.role,
+    })
+    .from(users)
+    .where(eq(users.id, userId))
+    .limit(1);
+
+  return user[0]?.role || null;
 };
