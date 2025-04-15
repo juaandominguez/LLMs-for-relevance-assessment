@@ -1,10 +1,10 @@
 import React from 'react'
-import { getGroupedAssesments, getAllPairs } from "@/db/queries"
+import { getGroupedAssessments, getAllPairs } from "@/db/queries"
 import DataDashboard from './data-dashboard'
 
 
 const Page = async () => {
-    const [assessments, pairs] = await Promise.all([getGroupedAssesments(), getAllPairs()]);
+    const [assessments, pairs] = await Promise.all([getGroupedAssessments(), getAllPairs()]);
 
     const assessmentMap = new Map(pairs.map((pair) => [pair.id, {
         id: pair.id,

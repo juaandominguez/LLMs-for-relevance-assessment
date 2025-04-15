@@ -12,6 +12,11 @@ import { drizzle } from "drizzle-orm/vercel-postgres";
 
 export const db = drizzle();
 
+export const roles = pgTable("role", {
+  name: text("name").primaryKey().notNull(),
+  description: text("description"),
+});
+
 export const users = pgTable("user", {
   id: text("id")
     .primaryKey()
@@ -21,7 +26,9 @@ export const users = pgTable("user", {
   password: text("password"),
   emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: text("image"),
-  isGuest: boolean("isGuest").$defaultFn(() => false),
+  role: text("role")
+    .notNull()
+    .references(() => roles.name, { onDelete: "set null" }),
   lastAssessment: integer("lastAssessment").$defaultFn(() => 0),
   createdAt: timestamp("createdAt", { mode: "date" }).$defaultFn(
     () => new Date()
@@ -98,17 +105,34 @@ export const authenticators = pgTable(
   })
 );
 
+export const queries = pgTable("query", {
+  id: integer("id").primaryKey(),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  narrative: text("narrative").notNull(),
+  createdAt: timestamp("createdAt", { mode: "date" }).notNull(),
+  updatedAt: timestamp("updatedAt", { mode: "date" }).notNull(),
+});
+
+export const documents = pgTable("document", {
+  id: text("id").primaryKey(),
+  text: text("text").notNull(),
+  createdAt: timestamp("createdAt", { mode: "date" }).notNull(),
+  updatedAt: timestamp("updatedAt", { mode: "date" }).notNull(),
+});
+
 export const pairs = pgTable("pair", {
   id: integer("id").primaryKey(),
-  queryId: integer("query_id").notNull(),
-  queryTitle: text("query_title").notNull(),
-  queryDescription: text("query_description").notNull(),
-  queryNarrative: text("query_narrative").notNull(),
-  documentId: text("document_id").notNull(),
-  documentText: text("document_text").notNull(),
+  queryId: integer("queryId")
+    .notNull()
+    .references(() => queries.id, { onDelete: "cascade" }),
+  documentId: text("documentId")
+    .notNull()
+    .references(() => documents.id, { onDelete: "cascade" }),
   originalRelevance: integer("original_relevance").notNull(),
   llmRelevance: integer("llm_relevance").notNull(),
   createdAt: timestamp("createdAt", { mode: "date" }).notNull(),
+  updatedAt: timestamp("updatedAt", { mode: "date" }).notNull(),
 });
 
 export const assessments = pgTable(

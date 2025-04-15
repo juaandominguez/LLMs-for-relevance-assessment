@@ -1,5 +1,8 @@
 import { and, count, desc, eq } from "drizzle-orm";
-import { db, users, assessments, pairs } from "./schema";
+import { db, users, assessments, pairs, queries, documents } from "./schema";
+
+const GUEST_ROLE = "guest";
+const BASIC_ROLE = "basic";
 
 export const getUser = async (email: string) => {
   const user = await db.select().from(users).where(eq(users.email, email));
@@ -17,7 +20,7 @@ export const createUser = async (email: string, password: string) => {
       .values({
         email,
         password,
-        isGuest: false,
+        role: BASIC_ROLE,
       })
       .onConflictDoNothing()
       .returning();
@@ -36,7 +39,7 @@ export const createGuestUser = async () => {
     const user = await db
       .insert(users)
       .values({
-        isGuest: true,
+        role: GUEST_ROLE,
       })
       .returning();
 
@@ -47,7 +50,7 @@ export const createGuestUser = async () => {
   }
 };
 
-export const getAssesment = async (userId: string, pairId: number) => {
+export const getAssessment = async (userId: string, pairId: number) => {
   const assesment = await db
     .select()
     .from(assessments)
@@ -59,13 +62,13 @@ export const getAssesment = async (userId: string, pairId: number) => {
   return assesment[0];
 };
 
-export const createAssesment = async (
+export const createAssessment = async (
   userId: string,
   pairId: number,
   value: number
 ) => {
   try {
-    const assesment = await db
+    const assessment = await db
       .insert(assessments)
       .values({
         userId,
@@ -105,14 +108,14 @@ export const createAssesment = async (
         })
         .where(eq(users.id, userId));
     }
-    return assesment[0] || getAssesment(userId, pairId);
+    return assessment[0] || getAssessment(userId, pairId);
   } catch (e) {
     console.error("Error creating assessment:", e);
     throw e;
   }
 };
 
-export const getGroupedAssesments = async () => {
+export const getGroupedAssessments = async () => {
   const ret = await db
     .select({
       pairId: assessments.pairId,
@@ -135,14 +138,67 @@ export const getAllAssesmentsByUser = async (userId: string) => {
   return assesments;
 };
 
+export const createQuery = async (
+  id: number,
+  title: string,
+  description: string,
+  narrative: string
+) => {
+  const pair = await db
+    .insert(queries)
+    .values([
+      {
+        id,
+        title,
+        description,
+        narrative,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ])
+    .onConflictDoUpdate({
+      target: [pairs.id],
+      set: {
+        id,
+        title,
+        description,
+        narrative,
+        updatedAt: new Date(),
+      },
+    })
+    .returning();
+
+  return pair[0];
+};
+
+export const createDocument = async (id: string, text: string) => {
+  const document = await db
+    .insert(documents)
+    .values([
+      {
+        id,
+        text,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ])
+    .onConflictDoUpdate({
+      target: [documents.id],
+      set: {
+        id,
+        text,
+        updatedAt: new Date(),
+      },
+    })
+    .returning();
+
+  return document[0];
+};
+
 export const createPair = async (
   pairId: number,
   queryId: number,
-  queryTitle: string,
-  queryDescription: string,
-  queryNarrative: string,
   documentId: string,
-  documentText: string,
   originalRelevance: number,
   llmRelevance: number
 ) => {
@@ -152,28 +208,21 @@ export const createPair = async (
       {
         id: pairId,
         queryId,
-        queryTitle,
-        queryDescription,
-        queryNarrative,
         documentId,
-        documentText,
         originalRelevance,
         llmRelevance,
         createdAt: new Date(),
+        updatedAt: new Date(),
       },
     ])
     .onConflictDoUpdate({
       target: [pairs.id],
       set: {
         queryId,
-        queryTitle,
-        queryDescription,
-        queryNarrative,
         documentId,
-        documentText,
         originalRelevance,
         llmRelevance,
-        createdAt: new Date(),
+        updatedAt: new Date(),
       },
     })
     .returning();
