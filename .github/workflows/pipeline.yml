@@ -132,8 +132,11 @@ jobs:
       - name: Build Project
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
 
-      - name: Install E2E test dependencies
-        run: bun install
+      - name: Start Vercel Dev
+        run: bun run start &
+
+      - name: Install ci dependencies
+        run: bun i ci
 
       - name: Install Playwright browsers
         run: bunx playwright install --with-deps
