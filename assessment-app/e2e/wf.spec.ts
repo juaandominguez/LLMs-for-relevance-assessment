@@ -2,7 +2,6 @@ import { expect, test } from "@playwright/test";
 
 test("Workflow", async ({ page }) => {
   await page.goto("http://localhost:3000/login");
-  await page.getByRole("button", { name: "Or login as a Guest" }).click();
   await page.getByRole("textbox", { name: "Email" }).click();
   await page.getByRole("textbox", { name: "Email" }).fill("test@test.com");
   await page.getByRole("textbox", { name: "Password" }).click();
