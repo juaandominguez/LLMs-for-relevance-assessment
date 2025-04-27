@@ -3,7 +3,11 @@ import { expect, test } from "@playwright/test";
 test("Workflow", async ({ page }) => {
   await page.goto("http://localhost:3000/login");
   await page.getByRole("button", { name: "Or login as a Guest" }).click();
-  await expect(page).toHaveURL("http://localhost:3000");
+  await page.getByRole("textbox", { name: "Email" }).click();
+  await page.getByRole("textbox", { name: "Email" }).fill("test@test.com");
+  await page.getByRole("textbox", { name: "Password" }).click();
+  await page.getByRole("textbox", { name: "Password" }).fill("test123");
+  await page.getByRole("button", { name: "Login", exact: true }).click();
   await page.getByRole("button", { name: "Toggle Sidebar" }).click();
   await page.getByRole("link", { name: "50. Tiananmen Square" }).click();
   await page.getByRole("link", { name: "Income Tax Evasion" }).click();
