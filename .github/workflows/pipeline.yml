@@ -21,8 +21,11 @@ jobs:
         with:
           access_token: ${{ secrets.GITHUB_TOKEN }}
 
-  lint:
+  build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        job: [lint, unit_tests]
     defaults:
       run:
         working-directory: assessment-app
@@ -40,7 +43,7 @@ jobs:
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
         with:
-          bun-version: 1.1.10 # or latest if you prefer
+          bun-version: 1.2.10
 
       - name: Cache Bun dependencies
         uses: actions/cache@v4
@@ -53,47 +56,11 @@ jobs:
       - name: Install dependencies
         run: bun install
 
-      - name: Lint code
-        run: bun run lint
-
-  unit_tests:
-    needs: lint
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: assessment-app
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Setup Node.js 22
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v1
-        with:
-          bun-version: 1.1.10
-
-      - name: Restore Bun cache
-        uses: actions/cache@v4
-        with:
-          path: ~/.bun
-          key: ${{ runner.os }}-bun-${{ hashFiles('assessment-app/bun.lockb') }}
-          restore-keys: |
-            ${{ runner.os }}-bun-
-
-      - name: Install dependencies
-        run: bun install
-
-      - name: Run unit tests
-        run: bun run test:unit
+      - name: Run ${{ matrix.job }}
+        run: bun run ${{ matrix.job == 'lint' && 'lint' || 'test:unit' }}
 
   deploy_preview:
-    needs: unit_tests
+    needs: build
     runs-on: ubuntu-latest
     environment:
       name: Preview
@@ -115,7 +82,7 @@ jobs:
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
         with:
-          bun-version: 1.1.10
+          bun-version: 1.2.10
 
       - name: Restore Bun cache
         uses: actions/cache@v4
@@ -142,7 +109,7 @@ jobs:
         run: echo "url=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})" >> $GITHUB_OUTPUT
 
   deploy_production:
-    needs: unit_tests
+    needs: build
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'push' }}
     environment:
@@ -165,7 +132,7 @@ jobs:
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
         with:
-          bun-version: 1.1.10
+          bun-version: 1.2.10
 
       - name: Restore Bun cache
         uses: actions/cache@v4
