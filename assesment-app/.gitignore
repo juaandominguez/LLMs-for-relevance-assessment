@@ -40,3 +40,12 @@ yarn-error.log*
 next-env.d.ts
 
 drizzle/*
+
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+.vercel
