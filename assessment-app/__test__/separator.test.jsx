@@ -1,12 +1,11 @@
 import { expect, describe, it } from "bun:test";
 import { render } from "@testing-library/react";
 import { Separator } from "@/components/ui/separator";
-import "@testing-library/jest-dom";
 
 describe("Separator", () => {
   it("should render horizontal separator by default", () => {
     const { container } = render(<Separator />);
-    
+
     const separator = container.firstChild;
     expect(separator).not.toBeNull();
     expect(separator.getAttribute("data-orientation")).toBe("horizontal");
@@ -15,7 +14,7 @@ describe("Separator", () => {
 
   it("should render vertical separator when specified", () => {
     const { container } = render(<Separator orientation="vertical" />);
-    
+
     const separator = container.firstChild;
     expect(separator).not.toBeNull();
     expect(separator.getAttribute("data-orientation")).toBe("vertical");
@@ -24,8 +23,8 @@ describe("Separator", () => {
 
   it("should apply custom classes", () => {
     const { container } = render(<Separator className="bg-red-500" />);
-    
+
     const separator = container.firstChild;
     expect(separator.className).toContain("bg-red-500");
   });
-}); 
+});
