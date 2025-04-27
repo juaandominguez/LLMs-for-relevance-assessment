@@ -57,6 +57,9 @@ jobs:
     environment:
       name: Preview
       url: ${{ steps.deploy_step.outputs.url }}
+    defaults:
+      run:
+        working-directory: assessment-app
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -90,12 +93,15 @@ jobs:
         run: echo "url=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})" >> $GITHUB_OUTPUT
 
   deploy_production:
-    needs: deploy_preview
+    needs: build
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'push' }}
     environment:
       name: Production
       url: ${{ steps.deploy_prod.outputs.url }}
+    defaults:
+      run:
+        working-directory: assessment-app
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
