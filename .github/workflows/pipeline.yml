@@ -58,7 +58,7 @@ jobs:
       - name: Install dependencies
         run: bun install
       - name: Run tests
-        run: bun run test
+        run: bun run test:unit
 
   deploy_preview:
     needs: unit_tests
