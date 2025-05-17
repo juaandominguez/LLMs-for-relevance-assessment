@@ -6,7 +6,7 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/
 import { Line, LineChart, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer, ScatterChart, Scatter, BarChart, Bar, Cell, Pie, PieChart, Sector } from "recharts"
 import { Comparison } from '@/types'
 
-const COLORS = ['hsl(var(--chart-1))', 'hsl(var(--chart-2))', 'hsl(var(--chart-3))']
+const COLORS = ['#1f77b4', '#9467bd', '#adadad']
 // eslint-disable-next-line
 const renderActiveShape = (props: any) => {
     const RADIAN = Math.PI / 180
@@ -83,8 +83,8 @@ const DataDashboard: React.FC<DataDashboardProps> = ({ data }) => {
                 </CardHeader>
                 <CardContent>
                     <ChartContainer config={{
-                        golden: { label: "Golden", color: "hsl(var(--chart-1))" },
-                        llm: { label: "LLM", color: "hsl(var(--chart-2))" },
+                        golden: { label: "Golden", color: COLORS[0] },
+                        llm: { label: "LLM", color: COLORS[1] },
                     }} className="">
                         <ResponsiveContainer width="25%" height="25%">
                             <LineChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
@@ -108,8 +108,8 @@ const DataDashboard: React.FC<DataDashboardProps> = ({ data }) => {
                 </CardHeader>
                 <CardContent>
                     <ChartContainer config={{
-                        golden: { label: "Golden", color: "hsl(var(--chart-1))" },
-                        llm: { label: "LLM", color: "hsl(var(--chart-2))" },
+                        golden: { label: "Golden", color: COLORS[0] },
+                        llm: { label: "LLM", color: COLORS[1] },
                     }} className="">
                         <ResponsiveContainer width="25%" height="25%">
                             <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
@@ -131,8 +131,8 @@ const DataDashboard: React.FC<DataDashboardProps> = ({ data }) => {
                 </CardHeader>
                 <CardContent>
                     <ChartContainer config={{
-                        golden: { label: "Golden", color: "hsl(var(--chart-1))" },
-                        llm: { label: "LLM", color: "hsl(var(--chart-2))" },
+                        golden: { label: "Golden", color: COLORS[0] },
+                        llm: { label: "LLM", color: COLORS[1] },
                     }} className="">
                         <ResponsiveContainer width="25%" height="25%">
                             <BarChart data={[{ name: 'Total', golden: totalGolden, llm: totalLLM }]} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
@@ -156,9 +156,11 @@ const DataDashboard: React.FC<DataDashboardProps> = ({ data }) => {
                 </CardHeader>
                 <CardContent>
                     <ChartContainer config={{
-                        golden: { label: "Golden > LLM", color: "hsl(var(--chart-1))" },
-                        llm: { label: "LLM > Golden", color: "hsl(var(--chart-2))" },
-                        equal: { label: "Equal", color: "hsl(var(--chart-3))" },
+                        golden: { label: "Golden > LLM", color: COLORS[0] },
+                        llm: {
+                            label: "LLM > Golden", color: COLORS[1]
+                        },
+                        equal: { label: "Equal", color: COLORS[2] },
                     }} className="">
                         <ResponsiveContainer width="25%" height="25%">
                             <PieChart>
@@ -183,7 +185,7 @@ const DataDashboard: React.FC<DataDashboardProps> = ({ data }) => {
                     </ChartContainer>
                 </CardContent>
             </Card>
-        </div>
+        </div >
     )
 }
 
