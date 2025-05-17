@@ -7,6 +7,7 @@ import docs_db from '@/data/docs_db.json'
 import { useSession } from 'next-auth/react'
 import { submitAssessment } from '@/utils/server-actions'
 import toast from 'react-hot-toast'
+import { getUserRole } from '@/db/queries'
 
 interface HandleProps {
     right: boolean
@@ -48,7 +49,12 @@ const Handler: React.FC<HandleProps> = ({ right, disabled = false, className, re
         if (right) {
             onClickRight()
             if (docs_db.length === intPair) {
-                router.push('/results')
+                if (await getUserRole(session!.user!.id!) === 'admin') {
+                    router.push('/results')
+                }
+                else {
+                    router.push('/thank-you')
+                }
             } else {
                 router.push(`/assessment?pair=${nextPair}`)
             }

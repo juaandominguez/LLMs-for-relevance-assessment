@@ -199,7 +199,7 @@ const LoginCard = () => {
                                     </FormItem>
                                 )}
                             />
-                            <Button className="w-[100%]" type="submit" disabled={isLoading}>Login</Button>
+                            <Button className="w-[100%]" type="submit" disabled={isLoading}>{isRegister ? "Register" : "Login"}</Button>
                         </form>
                     </Form>
                     <div className="flex justify-between items-center mt-4">
