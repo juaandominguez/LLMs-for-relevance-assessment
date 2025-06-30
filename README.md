@@ -11,7 +11,7 @@ This repository serves a dual purpose: it hosts a web-based platform for human r
 * **User Authentication**: Secure login via GitHub, Google, or email/password credentials. It also supports guest access for quick assessments.
 * **Relevance Assessment Interface**: An intuitive interface for evaluating document-topic pairs using a scoring system (0-2).
 * **Assessment Guidelines**: Clear guidelines are available within the assessment interface to ensure consistent evaluations.
-* **User Role Management**: The platform appears to support different user roles, likely for managing access and permissions, implied by the `getUserRole` action.
+* **User Role Management**: The platform supports different user roles, for managing access and permissions.
 * **Persistence**: It uses Drizzle ORM with PostgreSQL for robust data storage of user information and assessment results.
 
 ### LLM Experimentation & Data Processing (`src/`, `scripts/`, `docker/`)
@@ -42,8 +42,8 @@ Before you begin, make sure you have the following installed:
 1.  **Clone the repository:**
 
     ```bash
-    git clone [repository-url]
-    cd [repository-name]
+    git clone https://github.com/juaandominguez/LLMs-for-relevance-assessment
+    cd LLMs-for-relevance-assessment
     ```
 
 2.  **Web Application Setup (`assessment-app/`)**
@@ -57,7 +57,7 @@ Before you begin, make sure you have the following installed:
         bun install
         ```
     * Set up **environment variables**:
-        Create a `.env` file in the `assessment-app` directory. Here's an example of what it might contain:
+        Create a `.env` file in the `assessment-app` directory. Here's an example of what it should contain:
         ```
         # PostgreSQL Database URL
         POSTGRES_URL="postgresql://user:password@host:port/database"
@@ -66,11 +66,11 @@ Before you begin, make sure you have the following installed:
         AUTH_SECRET="your_nextauth_secret" # Generate a strong, random string
         AUTH_URL="http://localhost:3000" # Your application's URL
 
-        # Optional: GitHub Provider (if enabled)
+        # Optional: GitHub Provider
         GITHUB_ID="your_github_client_id"
         GITHUB_SECRET="your_github_client_secret"
 
-        # Optional: Google Provider (if enabled)
+        # Optional: Google Provider
         GOOGLE_ID="your_google_client_id"
         GOOGLE_SECRET="your_google_client_secret"
         ```
@@ -82,7 +82,7 @@ Before you begin, make sure you have the following installed:
 
 3.  **LLM Experimentation Setup (`src/`, `scripts/`, `docker/`)**
 
-    * **Docker Image Build**: The `buildspec.yml` outlines the process for building and pushing a Docker image, likely for Slurm-based LLM processing. You'll need to configure your Docker environment and provide credentials for your Docker registry.
+    * **Docker Image Build**: The `buildspec.yml` outlines the process for building and pushing a Docker image, for Slurm-based LLM processing. You'll need to configure your Docker environment and provide credentials for your Docker registry.
         ```bash
         # This is how the Docker image is built and pushed as per buildspec.yml.
         # Ensure DOCKER_TOKEN, DOCKER_REGISTRY, and DOCKER_USERNAME are set in your environment variables.
@@ -90,7 +90,7 @@ Before you begin, make sure you have the following installed:
         # docker build -t "$DOCKER_REGISTRY"/irlab/slurm_images:trec-llm docker -f docker/Dockerfile
         # docker push "$DOCKER_REGISTRY"/irlab/slurm_images:trec-llm
         ```
-    * **Python Dependencies**: Navigate to the root of the repository and install any necessary Python dependencies for the LLM scripts. You'll likely find a `requirements.txt` or `pyproject.toml` file to guide this process.
+    * **Python Dependencies**: Navigate to the root of the repository and install any necessary Python dependencies for the LLM scripts.
         ```bash
         # Example:
         # pip install -r requirements.txt
@@ -172,4 +172,4 @@ Contributions are always welcome! Please feel free to open issues or submit pull
 
 ## License
 
- Apache 2.0 license strikes an excellent balance between openness and protection. It maximizes the potential for adoption and commercial use for the project, provides essential patent protection, ensures proper attribution, and is widely accepted within the tech and research communities.
+Apache 2.0 license strikes an excellent balance between openness and protection. It maximizes the potential for adoption and commercial use for the project, provides essential patent protection, ensures proper attribution, and is widely accepted within the tech and research communities.
